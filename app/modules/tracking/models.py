@@ -149,3 +149,17 @@ class EmergencyAlert(BaseModel):
     __table_args__ = (
         Index("ix_emergency_alerts_location_gist", location, postgresql_using="gist"),
     )
+
+
+# ==========================================
+# TODO: INTEGRATION NOTES (عند اكتمال موديولي fleet و auth)
+# ==========================================
+# 1. في جدول BusLocationLog:
+#    - ربط bus_id بـ ForeignKey("buses.id", ondelete="CASCADE")
+#    - ربط trip_id بـ ForeignKey("trips.id", ondelete="SET NULL")
+#
+# 2. في جدول EmergencyAlert:
+#    - ربط bus_id بـ ForeignKey("buses.id", ondelete="CASCADE")
+#    - ربط driver_id بـ ForeignKey("users.id", ondelete="RESTRICT")
+#    - ربط trip_id بـ ForeignKey("trips.id", ondelete="SET NULL")
+#    - ربط resolved_by بـ ForeignKey("users.id", ondelete="SET NULL")

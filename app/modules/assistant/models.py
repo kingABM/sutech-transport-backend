@@ -137,3 +137,11 @@ class ChatMessage(BaseModel):
         "ChatSession", 
         back_populates="messages"
     )
+
+
+# ==========================================
+# TODO: INTEGRATION NOTES (عند اكتمال موديول auth)
+# ==========================================
+# 1. في جدول ChatSession:
+#    - تعديل user_id ليصبح ForeignKey("users.id", ondelete="CASCADE")
+#    - إضافة relationship("User", back_populates="chat_sessions")
