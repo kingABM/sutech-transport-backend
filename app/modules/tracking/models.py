@@ -42,9 +42,9 @@ class Station(BaseModel):
         Index("ix_stations_location_gist", location, postgresql_using="gist"),
     )
 
-class BusLocationLog(BaseModel):
+class TripLocation(BaseModel):
     """سجل التتبع الحي لمواقع الحافلات والسرعة"""
-    __tablename__ = "bus_location_logs"
+    __tablename__ = "trip_locations"
 
     bus_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -85,12 +85,12 @@ class BusLocationLog(BaseModel):
 
     # فهرس مكاني وزمني لتسريع استرجاع مسار الرحلة على الخريطة
     __table_args__ = (
-        Index("ix_bus_location_logs_coords_gist", coordinates, postgresql_using="gist"),
+        Index("ix_trip_locations_coords_gist", coordinates, postgresql_using="gist"),
     )
 
-class EmergencyAlert(BaseModel):
+class SOSAlert(BaseModel):
     """جدول بلاغات الطوارئ وزر الاستغاثة (SOS)"""
-    __tablename__ = "emergency_alerts"
+    __tablename__ = "sos_alerts"
 
     bus_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -147,18 +147,18 @@ class EmergencyAlert(BaseModel):
     )
 
     __table_args__ = (
-        Index("ix_emergency_alerts_location_gist", location, postgresql_using="gist"),
+        Index("ix_sos_alerts_location_gist", location, postgresql_using="gist"),
     )
 
 
 # ==========================================
 # TODO: INTEGRATION NOTES (عند اكتمال موديولي fleet و auth)
 # ==========================================
-# 1. في جدول BusLocationLog:
+# 1. في جدول TripLocation:
 #    - ربط bus_id بـ ForeignKey("buses.id", ondelete="CASCADE")
 #    - ربط trip_id بـ ForeignKey("trips.id", ondelete="SET NULL")
 #
-# 2. في جدول EmergencyAlert:
+# 2. في جدول SOSAlert:
 #    - ربط bus_id بـ ForeignKey("buses.id", ondelete="CASCADE")
 #    - ربط driver_id بـ ForeignKey("users.id", ondelete="RESTRICT")
 #    - ربط trip_id بـ ForeignKey("trips.id", ondelete="SET NULL")

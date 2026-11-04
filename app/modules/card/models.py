@@ -43,9 +43,9 @@ class DigitalCard(BaseModel):
         comment="توقيت آخر عملية مسح ناجحة للكارنيه"
     )
 
-class BoardingLog(BaseModel):
+class Boarding(BaseModel):
     """سجل صعود الحافلات وعمليات فحص الكارنيه لمنع التكرار والتزوير"""
-    __tablename__ = "boarding_logs"
+    __tablename__ = "boardings"
 
     card_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -100,7 +100,7 @@ class BoardingLog(BaseModel):
 #    - تعديل user_id ليصبح ForeignKey("users.id", ondelete="CASCADE")
 #    - إضافة relationship("User", back_populates="digital_card")
 #
-# 2. في جدول BoardingLog:
+# 2. في جدول Boarding:
 #    - ربط bus_id بـ ForeignKey("buses.id", ondelete="CASCADE")
 #    - ربط driver_id بـ ForeignKey("users.id", ondelete="RESTRICT")
 #    - ربط station_id بـ ForeignKey("stations.id", ondelete="SET NULL")

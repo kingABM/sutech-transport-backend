@@ -71,7 +71,7 @@ class AuditLog(BaseModel):
     entity_name: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
-        comment="اسم الجدول أو الكيان المتأثر: Subscription, Bus, EmergencyAlert"
+        comment="اسم الجدول أو الكيان المتأثر: Subscription, Bus, SOSAlert"
     )
     entity_id: Mapped[Optional[uuid.UUID]] = mapped_column(
         UUID(as_uuid=True),

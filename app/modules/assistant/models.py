@@ -8,9 +8,9 @@ from pgvector.sqlalchemy import Vector
 
 from app.common.models import BaseModel
 
-class AssistantDocument(BaseModel):
+class KBDocument(BaseModel):
     """جدول المستندات واللوائح المصدرية للنقل الجامعي"""
-    __tablename__ = "assistant_documents"
+    __tablename__ = "kb_documents"
 
     title: Mapped[str] = mapped_column(
         String(255), 
@@ -30,19 +30,19 @@ class AssistantDocument(BaseModel):
     )
 
     # العلاقة مع مقاطع المستند
-    chunks: Mapped[List["AssistantDocumentChunk"]] = relationship(
-        "AssistantDocumentChunk", 
+    chunks: Mapped[List["KBChunk"]] = relationship(
+        "KBChunk",
         back_populates="document", 
         cascade="all, delete-orphan"
     )
 
-class AssistantDocumentChunk(BaseModel):
+class KBChunk(BaseModel):
     """جدول مقاطع المستندات ومتجهات التضمين للبحث الدلالي (RAG)"""
-    __tablename__ = "assistant_document_chunks"
+    __tablename__ = "kb_chunks"
 
     document_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey("assistant_documents.id", ondelete="CASCADE"),
+        ForeignKey("kb_documents.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
         comment="معرف المستند الأصلي"
@@ -64,15 +64,15 @@ class AssistantDocumentChunk(BaseModel):
     )
 
     # العلاقة العكسية مع المستند
-    document: Mapped["AssistantDocument"] = relationship(
-        "AssistantDocument", 
+    document: Mapped["KBDocument"] = relationship(
+        "KBDocument",
         back_populates="chunks"
     )
 
     # فهرس HNSW لتسريع استعلامات التشابه الدلالي عبر pgvector
     __table_args__ = (
         Index(
-            "ix_assistant_chunks_embedding_hnsw",
+            "ix_kb_chunks_embedding_hnsw",
             embedding,
             postgresql_using="hnsw",
             postgresql_with={"m": 16, "ef_construction": 64},
