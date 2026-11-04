@@ -1,7 +1,7 @@
 import asyncio
 from logging.config import fileConfig
 import importlib
-import pkgutil
+from pathlib import Path
 
 from sqlalchemy import pool, text
 from sqlalchemy.engine import Connection
@@ -20,15 +20,13 @@ config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 # 3. استيراد كلاس Base المشترك
 from app.common.models import Base
-import app.modules
 
-# 4. الاستيراد التلقائي لجميع الموديلز داخل app/modules لتفادي التعديل اليدوي المستمر
-for _, module_name, is_pkg in pkgutil.iter_modules(app.modules.__path__):
-    if is_pkg:
-        try:
-            importlib.import_module(f"app.modules.{module_name}.models")
-        except ModuleNotFoundError:
-            pass
+# 4. تحميل ملفات models.py الموجودة مباشرة داخل مجلدات app/modules.
+#    المجلدات تعمل كـ namespace packages، لذلك لا نعتمد على __init__.py.
+modules_dir = Path(__file__).resolve().parents[1] / "app" / "modules"
+for module_dir in modules_dir.iterdir():
+    if module_dir.is_dir() and (module_dir / "models.py").is_file():
+        importlib.import_module(f"app.modules.{module_dir.name}.models")
 
 target_metadata = Base.metadata
 
